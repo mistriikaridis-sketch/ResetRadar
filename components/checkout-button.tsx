@@ -2,17 +2,19 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useDict } from '@/components/locale-provider';
 
 export function CheckoutButton({ stripeConfigured = true }: { stripeConfigured?: boolean }) {
+  const dict = useDict();
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function start() {
     if (!stripeConfigured) {
-      setMessage('Stripe 尚未配置，暂时无法在线支付。请稍后再试或联系管理员。');
+      setMessage(dict.checkout.stripeMissing);
       return;
     }
-    const email = window.prompt('输入你已登记的邮箱，用于关联订阅：');
+    const email = window.prompt(dict.checkout.emailPrompt);
     if (!email) return;
     setLoading(true);
     setMessage('');
@@ -24,9 +26,9 @@ export function CheckoutButton({ stripeConfigured = true }: { stripeConfigured?:
       });
       const data = await response.json();
       if (data.url) window.location.assign(data.url);
-      else setMessage(data.message || '无法开始支付。');
+      else setMessage(data.message || dict.checkout.startFail);
     } catch {
-      setMessage('网络异常，请稍后再试。');
+      setMessage(dict.checkout.networkFail);
     } finally {
       setLoading(false);
     }
@@ -35,7 +37,7 @@ export function CheckoutButton({ stripeConfigured = true }: { stripeConfigured?:
   return (
     <div>
       <Button onClick={start} disabled={loading || !stripeConfigured} className="w-full">
-        {loading ? '跳转中…' : stripeConfigured ? '前往 Stripe 支付' : '支付通道未就绪'}
+        {loading ? dict.checkout.redirecting : stripeConfigured ? dict.checkout.pay : dict.checkout.notReady}
       </Button>
       {message && <p className="mt-3 text-xs text-amber">{message}</p>}
     </div>

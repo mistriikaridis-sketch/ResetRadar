@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { MODEL_LABEL } from '@/lib/labels';
+import { useDict, useLocale } from '@/components/locale-provider';
 
 type Reminder = {
   id: string;
@@ -14,6 +15,7 @@ type Reminder = {
 };
 
 export function ManageLinkForm() {
+  const dict = useDict();
   const [message, setMessage] = useState('');
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +32,7 @@ export function ManageLinkForm() {
     });
     const body = await response.json();
     setLoading(false);
-    setMessage(body.message || '无法生成链接。');
+    setMessage(body.message || dict.manage.fail);
     if (body.url) setUrl(body.url);
   }
 
@@ -43,17 +45,15 @@ export function ManageLinkForm() {
       className="space-y-4 rounded-lg border border-slate-700 bg-panel p-6"
     >
       <div>
-        <p className="font-mono text-xs text-signal">查看 / 取消提醒</p>
-        <h2 className="mt-2 text-xl font-bold">用邮箱打开管理链接</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-400">
-          MVP 直接返回带签名的管理链接（24 小时有效）。正式环境可改为只发到邮箱的 magic link。
-        </p>
+        <p className="font-mono text-xs text-signal">{dict.manage.kicker}</p>
+        <h2 className="mt-2 text-xl font-bold">{dict.manage.title}</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-400">{dict.manage.body}</p>
       </div>
       <label className="label">
-        邮箱
+        {dict.manage.email}
         <input required name="email" type="email" className="field mt-1" />
       </label>
-      <Button disabled={loading}>{loading ? '生成中…' : '生成管理链接'}</Button>
+      <Button disabled={loading}>{loading ? dict.manage.generating : dict.manage.generate}</Button>
       {message && <p className="text-sm text-signal">{message}</p>}
       {url && (
         <p className="break-all text-sm">
@@ -66,7 +66,16 @@ export function ManageLinkForm() {
   );
 }
 
-export function ReminderManager({ token, reminders: initial }: { token: string; reminders: Reminder[] }) {
+export function ReminderManager({
+  token,
+  reminders: initial,
+}: {
+  token: string;
+  reminders: Reminder[];
+}) {
+  const dict = useDict();
+  const { locale } = useLocale();
+  const dateLocale = locale === 'en' ? 'en-US' : 'zh-CN';
   const [reminders, setReminders] = useState(initial);
   const [message, setMessage] = useState('');
 
@@ -78,16 +87,18 @@ export function ReminderManager({ token, reminders: initial }: { token: string; 
       body: JSON.stringify({ id, token }),
     });
     const body = await response.json();
-    setMessage(body.message || '操作失败。');
+    setMessage(body.message || dict.manage.opFail);
     if (response.ok) {
-      setReminders((current) => current.map((item) => (item.id === id ? { ...item, status: 'CANCELED' } : item)));
+      setReminders((current) =>
+        current.map((item) => (item.id === id ? { ...item, status: 'CANCELED' } : item)),
+      );
     }
   }
 
   return (
     <section className="rounded-lg border border-slate-700 bg-panel p-6">
-      <p className="font-mono text-xs text-signal">YOUR REMINDERS</p>
-      <h2 className="mt-2 text-xl font-bold">管理个人提醒</h2>
+      <p className="font-mono text-xs text-signal">{dict.manage.listKicker}</p>
+      <h2 className="mt-2 text-xl font-bold">{dict.manage.listTitle}</h2>
       {reminders.length ? (
         <div className="mt-4 divide-y divide-slate-800 text-sm">
           {reminders.map((item) => (
@@ -97,21 +108,23 @@ export function ReminderManager({ token, reminders: initial }: { token: string; 
                   {MODEL_LABEL[item.model as keyof typeof MODEL_LABEL] || item.model} · {item.status}
                 </p>
                 <p className="text-slate-400">
-                  预计 {new Date(item.expectedAt).toLocaleString('zh-CN')} · 提醒{' '}
-                  {new Date(item.remindAt).toLocaleString('zh-CN')}
-                  {item.advanceMinutes ? `（提前 ${item.advanceMinutes} 分钟）` : ''}
+                  {dict.manage.expected} {new Date(item.expectedAt).toLocaleString(dateLocale)} ·{' '}
+                  {dict.manage.remind} {new Date(item.remindAt).toLocaleString(dateLocale)}
+                  {item.advanceMinutes
+                    ? `（${dict.manage.advance} ${item.advanceMinutes} min）`
+                    : ''}
                 </p>
               </div>
               {['PENDING', 'PROCESSING', 'FAILED'].includes(item.status) && (
                 <Button type="button" onClick={() => cancel(item.id)} className="shrink-0">
-                  取消
+                  {dict.manage.cancel}
                 </Button>
               )}
             </div>
           ))}
         </div>
       ) : (
-        <p className="mt-4 text-sm text-slate-400">该邮箱暂无提醒记录。</p>
+        <p className="mt-4 text-sm text-slate-400">{dict.manage.empty}</p>
       )}
       {message && <p className="mt-3 text-sm text-signal">{message}</p>}
     </section>
