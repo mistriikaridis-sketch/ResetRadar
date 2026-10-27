@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Plan {
+  FREE
+  PRO
+  TEAM
+}
+
+enum EventModel {
+  CODEX
+  CLAUDE_CODE
+  GROK
+}
+
+enum EventStatus {
+  WATCHING
+  ANNOUNCED
+  EXPECTED
+  CONFIRMED
+  RESOLVED
+}
+
+enum Confidence {
+  LOW
+  MEDIUM
+  HIGH
+  OFFICIAL
+}
+
+enum ChannelType {
+  EMAIL
+  TELEGRAM
+  BARK
+  WECOM
+  WEB_PUSH
+}
+
+enum NotificationStatus {
+  QUEUED
+  SENT
+  FAILED
+  SKIPPED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
+
+enum ReminderStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+  CANCELED
+}
+
+model User {
+  id               String             @id @default(cuid())
+  email            String             @unique
+  telegramChatId   String?
+  barkKey          String?
+  wecomWebhook     String?
+  plan             Plan               @default(FREE)
+  stripeCustomerId String?            @unique
+  createdAt        DateTime           @default(now())
+  channels         NotificationChannel[]
+  logs             NotificationLog[]
+  subscriptions    Subscription[]
+  personalReminders PersonalReminder[]
+}
+
+model ResetEvent {
+  id          String            @id @default(cuid())
+  model       EventModel
+  status      EventStatus       @default(WATCHING)
+  announcedAt DateTime?
+  expectedAt  DateTime?
+  confirmedAt DateTime?
+  sourceUrl   String?
+  confidence  Confidence        @default(LOW)
+  note        String?
+  createdAt   DateTime          @default(now())
+  logs        NotificationLog[]
+
+  @@index([model, createdAt])
+}
+
+model NotificationChannel {
+  id      String      @id @default(cuid())
+  userId  String
+  type    ChannelType
+  value   String
+  enabled Boolean     @default(true)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, value])
+}
+
+model NotificationLog {
+  id        String             @id @default(cuid())
+  userId    String
+  eventId   String
+  channel   ChannelType
+  status    NotificationStatus @default(QUEUED)
+  error     String?
+  sentAt    DateTime?
+  createdAt DateTime           @default(now())
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     ResetEvent         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, createdAt])
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String
+  stripeSubscriptionId String             @unique
+  plan                 Plan
+  status               SubscriptionStatus
+  currentPeriodEnd     DateTime?
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PersonalReminder {
+  id             String         @id @default(cuid())
+  userId         String
+  model          EventModel
+  expectedAt     DateTime
+  remindAt       DateTime
+  advanceMinutes Int            @default(0)
+  status         ReminderStatus @default(PENDING)
+  attempts       Int            @default(0)
+  error          String?
+  sentAt         DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now()) @updatedAt
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status, remindAt])
+  @@index([userId, createdAt])
+}
+
+/// 简易键值，用于 lastCronAt 等运维元数据
+model AppMeta {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+

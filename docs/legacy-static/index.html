@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="ResetRadar 帮你记录 AI 工具额度恢复时间，并订阅经核验的规则与状态提醒。" />
+    <title>ResetRadar — 别再守着额度条</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar wrap">
+      <a class="brand" href="#top" aria-label="ResetRadar 首页"><span class="brand-mark">R</span> ResetRadar</a>
+      <nav aria-label="主导航"><a href="#how">怎么工作</a><a href="#pricing">定价</a><a href="#faq">常见问题</a></nav>
+      <button class="text-button" data-open-modal>订阅提醒</button>
+    </header>
+
+    <main id="top">
+      <section class="hero wrap">
+        <div class="hero-copy">
+          <p class="kicker"><span></span> quota awareness, not quota bypass</p>
+          <h1>不用盯着<br />额度条等天亮。</h1>
+          <p class="lede">把你看到的恢复时间记下来。ResetRadar 在你设定的时点提醒你，并把已核验的规则变化和服务异常推给你。</p>
+          <div class="hero-actions">
+            <button class="button primary" data-open-modal>设一个恢复提醒 <b>→</b></button>
+            <a class="button" href="#how">先看看怎么用</a>
+          </div>
+          <p class="microcopy">无需交出账号或 Cookie。免费版可用；创始订阅 <strong>¥4.90</strong> 起。</p>
+        </div>
+
+        <section class="radar" aria-label="额度恢复时间演示">
+          <div class="radar-top"><span>你的下一次提醒</span><span class="live"><i></i> 本地计时</span></div>
+          <div class="clock" id="clock" aria-live="polite">04:58:32</div>
+          <p class="reset-time">演示：今日 <span id="reset-date">21:00</span> 额度窗口恢复</p>
+          <div class="signal-line"><span></span></div>
+          <div class="radar-bottom"><span>Codex · 5 小时窗口</span><button class="underlined" id="adjust-time">调整时间</button></div>
+        </section>
+      </section>
+
+      <section class="proof wrap" aria-label="产品边界">
+        <p><strong>它做什么：</strong>倒计时、你主动设置的提醒、规则变更与官方状态页异常的人工核验推送。</p>
+        <p><strong>它不做什么：</strong>不读取账户、不承诺预测个人额度、不提供重置、绕过限制或账号共享。</p>
+      </section>
+
+      <section class="section wrap" id="how">
+        <div class="section-head"><p class="section-tag">三步，不多一秒</p><h2>把焦虑变成一个<br />可以关掉的提醒。</h2></div>
+        <div class="steps">
+          <article><span>01</span><h3>填下你看到的时间</h3><p>从 Codex、Claude Code 或 Grok 的限额提示里，填入恢复时间。来源只在你的设备上。</p></article>
+          <article><span>02</span><h3>选一条通知路径</h3><p>免费浏览倒计时。订阅者可选择邮件、Telegram、Bark 或团队频道。</p></article>
+          <article><span>03</span><h3>在恢复前回来</h3><p>按你的时区提醒；重要规则变化和服务异常，会先经过人工核验再发送。</p></article>
+        </div>
+      </section>
+
+      <section class="section product-grid wrap">
+        <div class="status-card">
+          <p class="section-tag">公开状态 · 样例</p>
+          <div class="status-row"><i class="dot good"></i><span>Codex 服务状态</span><b>正常</b></div>
+          <div class="status-row"><i class="dot watch"></i><span>额度规则追踪</span><b>待核验</b></div>
+          <div class="status-row"><i class="dot quiet"></i><span>用户上报</span><b>仅作参考</b></div>
+          <small>状态不是个人账户额度，也不能替代官方账户页面。</small>
+        </div>
+        <div class="product-copy"><p class="section-tag">少一点虚假确定性</p><h2>你的账户，只有你看得最准。</h2><p>平台会把“官方已确认”“社区观察”“未证实”分开标记。靠谱的提醒不是假装全知，而是说明信息来自哪里。</p><a href="#faq" class="underlined">阅读提醒规则</a></div>
+      </section>
+
+      <section class="section wrap" id="pricing">
+        <div class="section-head split"><div><p class="section-tag">创始预售</p><h2>先用真实需求<br />验证这件事。</h2></div><p>首批用户以低价加入；我们只在能交付的通知通道开通后收费。价格不含任何 AI 平台额度、订阅或重置。</p></div>
+        <div class="pricing">
+          <article class="plan"><p>免费</p><h3>¥0</h3><ul><li>本地倒计时</li><li>手动添加日历</li><li>规则百科访问</li></ul><button class="button" data-open-modal>创建免费提醒</button></article>
+          <article class="plan featured"><div class="ribbon">创始用户</div><p>Radar Pro</p><h3>¥4.90 <small>/ 首月</small></h3><ul><li>多工具提醒队列</li><li>邮件 / Telegram / Bark</li><li>人工核验的规则与异常提醒</li><li>创始用户价格锁定资格</li></ul><button class="button primary" data-open-modal data-plan="pro">加入创始名单 <b>→</b></button><small class="plan-note">收款页面尚未配置前，只收集候补，不扣款。</small></article>
+          <article class="plan"><p>小团队</p><h3>US$99 <small>/ 月</small></h3><ul><li>共享提醒日历</li><li>Slack / 飞书 / 企微通道</li><li>值班与状态摘要</li></ul><button class="button" data-open-modal data-plan="team">登记团队需求</button></article>
+        </div>
+      </section>
+
+      <section class="section faq wrap" id="faq"><p class="section-tag">先把话说清楚</p><details open><summary>ResetRadar 能知道我的准确额度恢复时间吗？</summary><p>不能。个人额度与恢复时间由各个平台按账户和套餐决定。你填写或授权设备本地读取的时间才是倒计时依据；请始终以平台账户页面为准。</p></details><details><summary>会读取我的 Codex、Claude 或 Grok 账号吗？</summary><p>不会。这个 MVP 不要求账号、Cookie 或 API 密钥。后续如加入浏览器本地助手，也应默认只在设备侧处理并明确征得同意。</p></details><details><summary>付款后我买到的是什么？</summary><p>你购买的是通知服务与经核验的信息整理，不是平台额度、额度恢复、API credit，也不保证任何平台的可用性。</p></details></section>
+
+      <section class="final-cta wrap"><p class="section-tag">现在开始</p><h2>下一次恢复，不必靠记忆。</h2><button class="button primary" data-open-modal>设置我的提醒 <b>→</b></button></section>
+    </main>
+    <footer class="wrap"><span>© 2026 ResetRadar</span><span>独立工具；与 OpenAI、Anthropic、xAI 无隶属关系。</span></footer>
+
+    <dialog id="signup-modal">
+      <form id="signup-form" method="dialog">
+        <button class="modal-close" type="button" data-close-modal aria-label="关闭">×</button>
+        <p class="section-tag" id="modal-label">设置提醒</p><h2>先留一个可通知你的地方。</h2>
+        <p class="modal-text">MVP 先收集需求。你不会被要求提供 AI 工具的账号、密码或 Cookie。</p>
+        <label>邮箱或 Telegram 用户名<input name="contact" required autocomplete="email" placeholder="you@example.com 或 @username" /></label>
+        <label>你在用什么工具？<select name="tool"><option>Codex</option><option>Claude Code</option><option>Grok</option><option>其他</option></select></label>
+        <label>下次恢复时间（可选）<input name="resetTime" type="datetime-local" /></label>
+        <input name="plan" id="selected-plan" type="hidden" value="free" />
+        <button class="button primary full" type="submit">保存我的候补登记 <b>→</b></button>
+        <p class="form-status" id="form-status" aria-live="polite"></p>
+      </form>
+    </dialog>
+    <script src="./app.js"></script>
+  </body>
+</html>

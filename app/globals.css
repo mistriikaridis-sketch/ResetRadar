@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #F7F5F0; color: #292822; font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans CJK SC", system-ui, sans-serif; }
+::selection { background: #D7E2D5; color: #292822; }
+input, select, textarea { color-scheme: light; }
+.paper-grid { background-image: linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), rgba(41,40,34,.055) calc(100% - 1px)), linear-gradient(rgba(41,40,34,.04) 1px, transparent 1px); background-size: 72px 100%, 100% 32px; }
+.editorial-title { font-family: "Iowan Old Style", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif; letter-spacing: -.06em; }
+@layer components { .field { @apply w-full rounded-sm border border-stone-300 bg-white px-3 py-2.5 text-sm text-stone-800 outline-none transition focus:border-signal focus:ring-1 focus:ring-signal; } .label { @apply block text-xs text-stone-500; } }
+
+/* 将原有控制台组件收束成“和纸信息板”，保留全部信息与交互。 */
+.grid-noise { background-image: linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), rgba(41,40,34,.05) calc(100% - 1px)), linear-gradient(rgba(41,40,34,.035) 1px, transparent 1px); background-size: 72px 100%, 100% 32px; }
+.border-slate-800 { border-color: #ded9d0 !important; }
+.border-slate-700, .border-slate-600 { border-color: #d9d4cb !important; }
+.text-slate-600, .text-slate-500 { color: #79746b !important; }
+.text-slate-400, .text-slate-300 { color: #625e56 !important; }
+.bg-panel { box-shadow: none; }
+.grid-noise form, .grid-noise .bg-panel { border-radius: 2px; }
+.grid-noise h1 { font-family: "Iowan Old Style", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif; font-weight: 500; line-height: 1.1; letter-spacing: -.065em; }
+.grid-noise input { border-color: #d9d4cb; background: #fffefa; color: #292822; }
+.grid-noise .bg-signal { color: #fff; }
