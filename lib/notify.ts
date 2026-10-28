@@ -1,6 +1,7 @@
 import { ChannelType, NotificationStatus, Plan, type ResetEvent, type User } from '@prisma/client';
 import { Resend } from 'resend';
 import { MODEL_LABEL } from './labels';
+import { emailShareFooterHtml, emailShareFooterText } from './email-share';
 import { escapeHtml } from './html';
 import { prisma } from './prisma';
 
@@ -35,11 +36,11 @@ function emailContent(event: ResetEvent) {
   const status = STATUS_LABEL[event.status];
   const note = event.note || '管理员正在持续核验这条事件。';
   const source = event.sourceUrl && /^https?:\/\//i.test(event.sourceUrl) ? event.sourceUrl : null;
-  const text = `你好，\n\nResetRadar 提醒：${model} 当前状态为“${status}”。\n\n${note}${source ? `\n\n核验来源：${source}` : ''}\n\n你收到这封邮件，是因为你主动在 ResetRadar 登记了提醒。ResetRadar 是独立的非官方工具；个人额度请始终以你的账户页面为准。`;
+  const text = `你好，\n\nResetRadar 提醒：${model} 当前状态为“${status}”。\n\n${note}${source ? `\n\n核验来源：${source}` : ''}\n\n你收到这封邮件，是因为你主动在 ResetRadar 登记了提醒。ResetRadar 是独立的非官方工具；个人额度请始终以你的账户页面为准。${emailShareFooterText()}`;
   const sourceHtml = source
     ? `<p style="margin:20px 0 0"><a href="${escapeHtml(source)}" style="color:#386b51;text-decoration:underline">查看核验来源</a></p>`
     : '';
-  const html = `<!doctype html><html lang="zh-CN"><body style="margin:0;background:#f6f4ef;color:#24231f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif"><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td style="padding:32px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background:#fffdf9;border:1px solid #ded9cf"><tr><td style="padding:32px"><p style="margin:0;color:#b26018;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em">RESET RADAR · EVENT UPDATE</p><h1 style="margin:18px 0 8px;font-size:28px;line-height:1.25">${escapeHtml(model)} 状态更新</h1><p style="margin:0;color:#5f5b53;font-size:16px;line-height:1.6">当前状态：<strong style="color:#386b51">${escapeHtml(status)}</strong></p><div style="margin-top:24px;padding:18px;background:#f6f4ef;border-left:3px solid #b26018;font-size:16px;line-height:1.7">${escapeHtml(note)}</div>${sourceHtml}<hr style="margin:32px 0 18px;border:0;border-top:1px solid #ded9cf"><p style="margin:0;color:#777168;font-size:12px;line-height:1.7">你收到这封邮件，是因为你主动在 ResetRadar 登记了提醒。ResetRadar 为独立的非官方工具；个人额度请始终以你的账户页面为准。</p></td></tr></table></td></tr></table></body></html>`;
+  const html = `<!doctype html><html lang="zh-CN"><body style="margin:0;background:#f6f4ef;color:#24231f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif"><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td style="padding:32px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background:#fffdf9;border:1px solid #ded9cf"><tr><td style="padding:32px"><p style="margin:0;color:#b26018;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em">RESET RADAR · EVENT UPDATE</p><h1 style="margin:18px 0 8px;font-size:28px;line-height:1.25">${escapeHtml(model)} 状态更新</h1><p style="margin:0;color:#5f5b53;font-size:16px;line-height:1.6">当前状态：<strong style="color:#386b51">${escapeHtml(status)}</strong></p><div style="margin-top:24px;padding:18px;background:#f6f4ef;border-left:3px solid #b26018;font-size:16px;line-height:1.7">${escapeHtml(note)}</div>${sourceHtml}<hr style="margin:32px 0 18px;border:0;border-top:1px solid #ded9cf"><p style="margin:0;color:#777168;font-size:12px;line-height:1.7">你收到这封邮件，是因为你主动在 ResetRadar 登记了提醒。ResetRadar 为独立的非官方工具；个人额度请始终以你的账户页面为准。</p>${emailShareFooterHtml()}</td></tr></table></td></tr></table></body></html>`;
   return { text, html, subject: `ResetRadar 提醒｜${model} ${status}` };
 }
 
