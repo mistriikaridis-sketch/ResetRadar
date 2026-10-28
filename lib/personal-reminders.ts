@@ -2,6 +2,7 @@ import { EventModel, ReminderStatus } from '@prisma/client';
 import { Resend } from 'resend';
 import { META_LAST_CRON_AT, setAppMeta } from './app-meta';
 import { MODEL_LABEL } from './labels';
+import { emailShareFooterHtml, emailShareFooterText } from './email-share';
 import { escapeHtml } from './html';
 import { prisma } from './prisma';
 
@@ -18,8 +19,8 @@ export function readableReminderError(error: string) {
 }
 
 function reminderEmail(model: string, expected: string) {
-  const text = `你好，\n\n这是你设置的个人提醒：${model} 的预计恢复时间已到（${expected}）。\n\n请打开你的账户页面核实实际状态；不同账户的额度恢复时间可能不同。\n\n你收到这封邮件，是因为你主动在 ResetRadar 设置了个人提醒。ResetRadar 是独立的非官方工具。`;
-  const html = `<!doctype html><html lang="zh-CN"><body style="margin:0;background:#f6f4ef;color:#24231f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif"><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td style="padding:32px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background:#fffdf9;border:1px solid #ded9cf"><tr><td style="padding:32px"><p style="margin:0;color:#b26018;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em">RESET RADAR · PERSONAL REMINDER</p><h1 style="margin:18px 0 8px;font-size:28px;line-height:1.25">预计恢复时间已到</h1><p style="margin:0;color:#5f5b53;font-size:16px;line-height:1.7">你设置的 <strong>${escapeHtml(model)}</strong> 提醒时间是：<br><strong style="color:#386b51">${escapeHtml(expected)}</strong></p><div style="margin-top:24px;padding:18px;background:#f6f4ef;border-left:3px solid #b26018;font-size:16px;line-height:1.7">请打开你的账户页面核实实际状态；不同账户的额度恢复时间可能不同。</div><hr style="margin:32px 0 18px;border:0;border-top:1px solid #ded9cf"><p style="margin:0;color:#777168;font-size:12px;line-height:1.7">你收到这封邮件，是因为你主动在 ResetRadar 设置了个人提醒。ResetRadar 为独立的非官方工具。</p></td></tr></table></td></tr></table></body></html>`;
+  const text = `你好，\n\n这是你设置的个人提醒：${model} 的预计恢复时间已到（${expected}）。\n\n请打开你的账户页面核实实际状态；不同账户的额度恢复时间可能不同。\n\n你收到这封邮件，是因为你主动在 ResetRadar 设置了个人提醒。ResetRadar 是独立的非官方工具。${emailShareFooterText()}`;
+  const html = `<!doctype html><html lang="zh-CN"><body style="margin:0;background:#f6f4ef;color:#24231f;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif"><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td style="padding:32px 16px"><table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background:#fffdf9;border:1px solid #ded9cf"><tr><td style="padding:32px"><p style="margin:0;color:#b26018;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em">RESET RADAR · PERSONAL REMINDER</p><h1 style="margin:18px 0 8px;font-size:28px;line-height:1.25">预计恢复时间已到</h1><p style="margin:0;color:#5f5b53;font-size:16px;line-height:1.7">你设置的 <strong>${escapeHtml(model)}</strong> 提醒时间是：<br><strong style="color:#386b51">${escapeHtml(expected)}</strong></p><div style="margin-top:24px;padding:18px;background:#f6f4ef;border-left:3px solid #b26018;font-size:16px;line-height:1.7">请打开你的账户页面核实实际状态；不同账户的额度恢复时间可能不同。</div><hr style="margin:32px 0 18px;border:0;border-top:1px solid #ded9cf"><p style="margin:0;color:#777168;font-size:12px;line-height:1.7">你收到这封邮件，是因为你主动在 ResetRadar 设置了个人提醒。ResetRadar 为独立的非官方工具。</p>${emailShareFooterHtml()}</td></tr></table></td></tr></table></body></html>`;
   return { text, html };
 }
 

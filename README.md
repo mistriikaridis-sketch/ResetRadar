@@ -1,5 +1,9 @@
 # ResetRadar
 
+[![Live demo](https://img.shields.io/badge/Live%20demo-igame.lat-58715B)](https://igame.lat)
+
+**Live demo:** [https://igame.lat](https://igame.lat)
+
 ResetRadar 是一个中文优先的 AI 编程工具额度事件看板与提醒 MVP。管理员手动录入并核验事件；用户可设置个人到点邮件提醒；Pro 用户可接收管理员核验事件的邮件 / Telegram / Bark 通知。
 
 > **免责声明（非官方）**：不隶属于或获 OpenAI、Anthropic、xAI 认可；不读取账号、密码、Cookie 或 API Key；不承诺预测、重置或绕过任何平台额度。用户个人额度始终以平台账户页面为准。本仓库以开源形式提供，便于自建与二次开发。
